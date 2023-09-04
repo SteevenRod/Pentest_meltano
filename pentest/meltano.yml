@@ -5,3 +5,24 @@ environments:
 - name: dev
 - name: staging
 - name: prod
+plugins:
+  extractors:
+  - name: tap-smoke-test
+    variant: meltano
+    pip_url: git+https://github.com/meltano/tap-smoke-test.git
+    config:
+      streams:
+      - stream_name: animals
+        input_filename: https://raw.githubusercontent.com/meltano/tap-smoke-test/main/demo-data/animals-data.jsonl
+  loaders:
+  - name: target-jsonl
+    variant: andyh1203
+    pip_url: target-jsonl
+jobs:
+- name: sample_job
+  tasks:
+  - tap-smoke-test target-jsonl
+schedules:
+- name: sample_schedule
+  interval: 0 0 * * *
+  job: sample_job
